@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+    <link rel="stylesheet" href="{% static 'chat.css' %}">
+{% endblock style %}
+
+
+{% block body %}
+<div class="p-5">
+
+    <div class="page-content page-container" id="page-content">
+        <div class="padding">
+            <div class="row container d-flex justify-content-center">
+                <div class="col-md-6">
+                    <div class="card card-bordered">
+                        <div class="card-header">
+                            <h4 class="card-title"><strong>Chat</strong></h4> <a class="btn btn-xs btn-secondary" href="#" data-abc="true">NITRR Student Info Service</a>
+                        </div>
+                        <div class="ps-container ps-theme-default ps-active-y" id="chat-content" style="overflow-y: scroll !important; height:400px !important;">
+
+                            <!--chat inserter area-->
+                            <div id="chatInserter"></div>
+                          
+                        </div>
+                        <!--main lines in a single line-->
+                        <div class="publisher bt-1 border-light"> <img class="avatar avatar-xs" src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="..."> <input class="publisher-input" id="chatText" type="text" placeholder="Write something"> <span class="publisher-btn file-group"> <i class="fa fa-paperclip file-browser"></i> <input type="file"> </span> <a class="publisher-btn" href="#" data-abc="true"><i class="fa fa-smile"></i></a> <a class="publisher-btn text-info" href="#" data-abc="true" onclick="chatInput(this)"><i class="fa fa-paper-plane"></i></a> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<script>
+    function chatInput(button)
+    {
+        //alert("Button clicked");
+        text_div = document.getElementById("chatText");
+        text_val = text_div.value;
+        text_div.value = ""
+        //alert(text_val+ " debug");
+        my_html_input = `
+        <div class="media media-chat media-chat-reverse">
+            <div class="media-body">
+                <p>`+ text_val+`</p>
+            </div>
+        </div>
+
+        `
+        $(my_html_input).insertBefore("#chatInserter");
+        URL = "/bot_input/" + text_val ;
+        var req = new XMLHttpRequest();
+            req.onreadystatechange = function(obj) {
+                if (this.readyState == 4 && this.status == 200) {
+                    //alert(this.responseText)
+                    json_response = JSON.parse(this.responseText);
+                    bot_text_response = json_response['bot_response']
+                    bot_html_response = `
+
+                    <div class="media media-chat"> <img class="avatar" src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="...">
+                        <div class="media-body">
+                            <p>` + bot_text_response + `</p>
+  
+                        </div>
+                    </div>
+
+                    `
+                    $(bot_html_response).insertBefore("#chatInserter");
+                }
+                else 
+                {
+                    console.log("error while receiving chat response from bot")
+                }
+            };
+        req.open("GET", URL, true);
+        req.send();
+    }
+</script>
+{% endblock body %}
+

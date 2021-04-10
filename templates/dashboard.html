@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1><span class="badge badge-danger">Questions in Database</span></h1>
+
+<div class="container table-responsive py-5"> 
+    <table class="table table-bordered table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Question</th>
+          <th scope="col">Answer</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for curr_question in all_questions %}
+        <tr>
+          <th scope="row">{{ forloop.counter}}</th>
+          <td>{{curr_question.display_text}}</td>
+          <td>{{curr_question.answer}}</td>
+        </tr>
+        {% endfor %}
+        
+      </tbody>
+    </table>
+    </div>
+<form action="/dashboard/" method="POST">
+    {% csrf_token %}
+    <input type="hidden" id="total_question" name="total_question" value="0">
+    <div class="p-md-4 px-sm-4 p-lg-5"  >
+        <div id="main_body">
+            
+        </div>
+        <div id="SupportMainDiv"></div>
+        <center><button class="btn btn-danger p-2 mr-2" onclick="return fn1()">ADD Main Question</button><button class="btn btn-danger p-2 mr-2" name="input_submit">SUBMIT</button></center>
+
+    </div>
+</form>
+<script>
+    function subFn(div_id)
+    {
+        //alert("subQuestionDiv" + div_id + " debug")
+        sub_div = document.getElementById("SupportsubQuestionDiv" + div_id)
+        //alert(document.getElementById("subTotal" + div_id).value + "val")
+        document.getElementById("subTotal" + div_id).value = parseInt(document.getElementById("subTotal" + div_id).value) + 1
+        sub_tot = document.getElementById("subTotal" + div_id).value 
+        val_div_insert = `
+            <input type="text " name = "subQuestionDiv`+ tot + `Question`+ sub_tot+`" class="p-1 m-1 col-md-12"><br>
+        `
+        $( val_div_insert).insertBefore( sub_div);
+        return false;
+    }
+    function fn1()
+    {
+        main_body = document.getElementById("main_body")
+        tot = parseInt(document.getElementById('total_question').value)
+        //alert(tot);
+        tot += 1;
+        document.getElementById('total_question').value = tot;
+        main_div = document.getElementById("SupportMainDiv")
+        div_text = ` 
+        <input type="hidden" name = "subTotal`+tot + `" id = "subTotal`+tot + `" value = "1">
+        <div class=" row mb-3" id = "subOuterQuestionDiv`+ tot+`">
+        <div class="col-md-6">
+            <input type="text "  name = "subQuestionDiv`+ tot + `Question1" class="p-1 m-1 col-md-12"><br>
+            <div id = "SupportsubQuestionDiv`+ tot+`"> </div>
+            </div>
+        <div class="col-md-6 text-right p-2 " class="p-2 mt-5">
+            <textarea cols="30" rows="10" name = "answer`+ tot+`"></textarea>
+        </div>
+        </div>
+        <center><button class="btn btn-primary p-2 mb-3" onclick="return subFn(`+ tot+`)">ADD Sub Question</button></center>
+        `
+        $( div_text).insertBefore( main_div);
+        return false;
+    }
+</script>
+{% endblock body %}
+
