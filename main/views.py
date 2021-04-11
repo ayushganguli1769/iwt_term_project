@@ -21,7 +21,7 @@ import json
 def chat_input(request,text):
     global bot
     my_bot_response = bot.get_response(text)
-    print(my_bot_response)
+    #print(my_bot_response)
     return_val = json.dumps({'question':text,'bot_response': str(my_bot_response)})
     return HttpResponse(return_val)
 def test(request):
@@ -41,13 +41,13 @@ def login(request):
 def dashboard(request):
     global list_trainer
     all_questions = Question.objects.all()
-    print(all_questions)
+    #print(all_questions)
     try:
         if 'input_submit' in request.POST:
             total_main_questions = int(request.POST['total_question'])
             for i in range(1,total_main_questions+1):
                 total_sub_questions = int(request.POST['subTotal' + str(i)])
-                print(total_sub_questions,'total_sub_questions')
+                #print(total_sub_questions,'total_sub_questions')
                 question_list = []
                 for j in range(1,total_sub_questions+1):
                     curr_question_text = request.POST['subQuestionDiv'+ str(i) + 'Question' + str(j)]
